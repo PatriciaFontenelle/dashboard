@@ -1,19 +1,9 @@
 <template>
-    <div class="main-container">
-        <Layout />
-    </div>
+    <router-view></router-view>
 </template>
 
-<script>
-import Layout from './components/Layout.vue';
-export default {
-    components: { Layout }
-
-}
+<script setup>
 </script>
 
-<style scoped>
-    .main-container {
-        
-    }
+<style>
 </style>

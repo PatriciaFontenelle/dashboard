@@ -28,4 +28,10 @@ button {
     background-color: transparent;
     border: none;
     outline: none;
+    display: flex;
+    align-items: center;
 } 
+
+a {
+    text-decoration: none;
+}

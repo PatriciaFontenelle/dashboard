@@ -1,229 +1,278 @@
 <template>
-    <div>
-        <nav>
-            <div class="sidebar" :class="{ collapsed: !menuOpened }">
-                <div class="sidebar-logo">
-                    <img class="logo" :src="`src/assets/logo/${menuOpened ? 'logo.png' : 'short-logo.png'}`"
-                        alt="dash logo">
-                </div>
-                <div class="menu-container">
-                    <button v-for="(item, index) in menuItems" @click="activeMenu = item.title" :key="index"
-                        class="icon-btn menu-item" :class="{ active: activeMenu === item.title }">
+    <div class="layout-container">
+        <nav :class="{ collapsed: !menuOpened }">
+            <img class="desktop-content" :src="`/src/assets/logo/${menuOpened ? 'logo.png' : 'short-logo.png'}`" alt="">
+            <div class="menu-items-container">
+                <div v-for="(item, index) in menuItems" :key="index">
+                    <button v-if="!item.submenus" class="icon-btn menu-item" :class="{ active: activeMenu === item.title }"
+                        @click="selectMenu(item)">
                         <div class="menu-item-icon">
-                            <font-awesome-icon :style="{ fontSize: '20px' }"
-                                :icon="'fa-solid ' + item.icon" />
+                            <font-awesome-icon :icon="`fa-solid ${item.icon}`" />
                         </div>
                         <div class="menu-item-title">
                             {{ item.title }}
                         </div>
                     </button>
+                    <Dropdown :item="item" :collapsed="!menuOpened" @setActiveMenu="(item) => selectMenu(item)"
+                        :activeMenu="activeMenu" v-if="item.submenus" />
                 </div>
             </div>
-            <div class="nav-content">
-                <div class="nav-left">
-                    <button @click="menuOpened = !menuOpened" class="icon-btn toogle-sidebar-mobile">
-                        <font-awesome-icon :icon="menuOpened ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"
-                            :style="{ fontSize: '1.5em' }" />
-                    </button>
-                    <button @click="menuOpened = !menuOpened" class="icon-btn toogle-sidebar-desktop">
-                        <font-awesome-icon :icon="menuOpened ? 'fa-solid fa-angles-left' : 'fa-solid fa-angles-right'"
-                            :style="{ fontSize: '1em' }" />
-                    </button>
-                    <div class="username">
-                        Hi, John!
-                    </div>
-                </div>
-                <div class="nav-middle">
-                    <img class="logo" src="../assets/logo/logo.png" alt="dash logo">
-                </div>
-                <div class="nav-right">
-                    <button class="icon-btn">
-                        <font-awesome-icon icon="fa-regular fa-bell" :style="{ fontSize: '1.5em' }" />
-                    </button>
-                    <button class="icon-btn">
-                        <font-awesome-icon icon="fa-solid fa-user-circle" :style="{ fontSize: '2em' }" />
-                    </button>
-                </div>
-            </div>
-
         </nav>
+        <header>
+            <div class="header-left">
+                <button class="icon-btn nav-toogle" @click="menuOpened = !menuOpened">
+                    <font-awesome-icon class="desktop-content"
+                        :icon="`fa-solid fa-angles-${menuOpened ? 'left' : 'right'}`" />
+                    <font-awesome-icon class="mobile-content" :icon="`fa-solid ${menuOpened ? 'fa-xmark' : 'fa-bars'}`" />
+                </button>
+                <span class="username">
+                    Hello, John!
+                </span>
+            </div>
+            <div class="header-middle">
+                <img class="mobile-content" src="/src/assets/logo/logo.png" alt="dash logo">
+            </div>
+            <div class="header-right">
+                <button class="icon-btn user-avatar">
+                    <font-awesome-icon style="font-size: 30px;" icon="fa-solid fa-user-circle" />
+                </button>
+
+            </div>
+        </header>
+        <main>
+            <router-view></router-view>
+        </main>
+
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
-export default {
-    setup() {
-        const menuOpened = ref(false);
-        const activeMenu = ref("Dashboard")
+import Dropdown from './Dropdown.vue';
+import { useRouter, useRoute } from 'vue-router'
 
-        return {
-            menuOpened,
-            activeMenu
-        }
+const router = useRouter();
+
+const menuOpened = ref(true);
+const activeMenu = ref("Dashboard");
+
+const menuItems = ref([
+    {
+        title: "Dashboard",
+        icon: 'fa-chart-simple',
+        path: "/dashboard"
     },
+    {
+        title: "Cadastro",
+        icon: "fa-file-pen",
+        path: "/teste",
+        submenus: [
+            {
+                title: "Products",
+                icon: "",
+                path: "/register/products"
+            },
+            {
+                title: "Employees",
+                icon: "",
+                path: "/register/employees"
+            },
 
-    data() {
-        return {
-            menuItems: [
-                {
-                    title: "Dashboard",
-                    icon: 'fa-chart-simple'
-                },
-                {
-                    title: "Settings",
-                    icon: 'fa-gear'
-                },
-                {
-                    title: "Logout",
-                    icon: 'fa-arrow-right-from-bracket'
-                },
-            ]
-        }
-    }
+        ],
+    },
+    {
+        title: "Settings",
+        icon: 'fa-gear',
+        path: "/settings"
+    },
+    {
+        title: "Logout",
+        icon: 'fa-arrow-right-from-bracket'
+    },
+])
+
+function selectMenu(menu) {
+    this.activeMenu = menu.title;
+    router.push(menu.path)
 
 }
 </script>
 
 <style scoped>
-nav {
-    padding: 20px 5%;
-}
-
-.nav-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 5vh;
-    z-index: 9999;
+.layout-container {
     position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
-.nav-right,
-.nav-middle,
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    height: 100%;
-}
-
-.nav-left {
-    justify-content: flex-start;
-}
-
-.nav-middle {
-    justify-content: center;
-}
-
-.nav-right {
-    justify-content: flex-end;
-}
-
-.sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
+/* NAV */
+nav {
     background-color: var(--bg-white);
-    z-index: 9998;
-    padding: calc(6vh + 40px) 20px 5%;
-    transition: .5s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    transition: width .3s linear;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.sidebar.collapsed {
-    right: 100%;
-    padding-inline: 0;
+nav.collapsed {
+    width: 80px;
 }
 
-.sidebar-logo {
-    display: none;
-    height: 6vh;
-    margin-bottom: 20px;
+nav img {
+    height: 40px;
+}
+
+.menu-items-container {
+    margin-top: 20px;
+    width: 100%;
 }
 
 .menu-item {
-    display: flex;
     padding: .75em;
+    width: 100%;
+    display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
-.menu-item.active > .menu-item-title,
-.menu-item.active > .menu-item-icon > svg {
-    fill: var(--primary-color);
+.menu-item:hover {
+    background-color: var(--secondary-color);
+}
+
+.active .menu-item-title {
     color: var(--primary-color);
-    font-weight: 600;
+    font-weight: bold;
+    transition: .2s ease;
 }
 
-.toogle-sidebar-desktop,
-.username {
+
+.menu-item-icon {
+    font-size: 18px;
+    width: 23px;
+    height: 23px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+nav.collapsed .menu-item-title {
+    opacity: 0;
+    width: 0;
+}
+
+/* HEADER */
+header {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    position: relative;
+    left: 250px;
+    width: calc(100vw - 250px);
+    height: 60px;
+    transition: .3s linear;
+}
+
+nav.collapsed~header {
+    left: 80px;
+    width: calc(100vw - 80px);
+}
+
+.header-left,
+.header-middle,
+.header-right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.header-left {
+    gap: 10px;
+}
+
+.header-middle {
+    justify-content: center;
+}
+
+.header-right {
+    justify-content: flex-end;
+}
+
+/* MAIN */
+main {
+    height: calc(100vh - 60px);
+    padding: 20px;
+    overflow: auto;
+    position: relative;
+    width: calc(100vw - 250px);
+    left: 250px;
+    transition: .3s linear;
+}
+
+nav.collapsed~main {
+    left: 80px;
+    width: calc(100vw - 80px);
+}
+
+/* OTHERS */
+
+.mobile-content {
     display: none;
 }
 
-.logo {
-    height: 100%;
-}
+@media screen and (max-width: 576px) {
 
-
-@media screen and (min-width: 600px) {
+    /* NAV */
     nav {
-        display: flex;
-        justify-content: end;
+        width: 100%;
+        padding-top: 60px;
+        z-index: 10000;
+        transition: left .3s linear;
     }
 
-    .nav-content {
-        width: calc(100vw - (270px + 5%));
-        transition: .5s ease;
+    nav.collapsed {
+        left: -100%;
     }
 
-    .nav-middle,
-    .toogle-sidebar-mobile {
+    /* HEADER */
+    header,
+    nav.collapsed~header {
+        background-color: var(--bg-white);
+        left: 0;
+        width: 100%;
+        z-index: 100001;
+    }
+
+    .header-left>.username {
         display: none;
     }
 
-    .toogle-sidebar-desktop,
-    .username {
-        display: block;
+    .header-middle img {
+        height: 35px;
     }
 
-    .username {
-        font-weight: 600;
-    }
-
-    .nav-middle {
-        justify-content: flex-start;
-    }
-
-    .sidebar {
-        max-width: 250px;
-        padding-top: 20px;
-        transition: .1s ease;
-    }
-
-    .sidebar.collapsed {
-        width: 80px;
-    }
-
-    .sidebar.collapsed~.nav-content {
-        width: calc(100vw - (100px + 5%));
-    }
-
-    .sidebar.collapsed  > .menu-container > .menu-item {
-        justify-content: center;
+    /* MAIN */
+    main,
+    nav.collapsed~main {
+        left: 0;
         width: 100%;
     }
 
-    .sidebar.collapsed > .menu-container > .menu-item > .menu-item-title {
-        display: none;
+    /* OTHERS */
+    .mobile-content {
+        display: block;
     }
 
-    .sidebar-logo {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .desktop-content {
+        display: none;
     }
 }
 </style>

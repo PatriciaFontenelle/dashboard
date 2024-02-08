@@ -1,6 +1,7 @@
 import { createApp } from "vue";
-import "./style.css";
+import router from "./Routes.js";
 import App from "./App.vue";
+import "./style.css";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -18,7 +19,12 @@ import {
   faArrowRightFromBracket,
   faUserCircle,
   faAnglesRight,
-  faAnglesLeft
+  faAnglesLeft,
+  faFilePen,
+  faAngleUp,
+  faAngleDown,
+  faCaretDown,
+  faCaretUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBell } from "@fortawesome/free-regular-svg-icons";
@@ -35,6 +41,17 @@ library.add(
   faUserCircle,
   faAnglesRight,
   faAnglesLeft,
+  faFilePen,
+  faCaretDown,
+  faCaretUp
 );
 
-createApp(App).component("font-awesome-icon", FontAwesomeIcon).mount("#app");
+createApp(App)
+  .use(router)
+  .component("font-awesome-icon", FontAwesomeIcon)
+  .mount("#app")
+
+// const app = createApp(App);
+// app.use(router);
+// app.component("font-awesome-icon", FontAwesomeIcon);
+// app.mount("#app");
