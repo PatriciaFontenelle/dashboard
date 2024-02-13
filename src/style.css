@@ -1,5 +1,6 @@
 :root {
     --primary-color: #FF5757;
+    --primary-transparent: #FF575720;
     --secondary-color: #F9F9F9;
     --dark-900: #2D3748;
     --dark-500: #718096;
@@ -11,14 +12,18 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    color: var(--dark-900);
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
+}
+
+*:not(path) {
+    color: var(--dark-900);
 }
 
 body {
     background-color: var(--secondary-color)
 }
+
 
 button {
     cursor: pointer;

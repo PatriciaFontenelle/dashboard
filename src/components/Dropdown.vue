@@ -1,6 +1,8 @@
 <template>
     <div class="dropdown-container">
-        <button class="icon-btn dropdown-toogle" :class="{ collapsed: collapsed }" @click="opened = !opened">
+        <button class="icon-btn dropdown-toogle"
+            :class="{ collapsed: collapsed, active: (collapsed && item.submenus.findIndex((s) => s.title === activeMenu) !== -1) }"
+            @click="toogleOpen()">
             <div class="menu-item-icon">
                 <font-awesome-icon :icon="`fa-solid ${item.icon}`" />
             </div>
@@ -14,7 +16,7 @@
         <transition name="fade">
             <div v-if="opened && !collapsed" class="sub-menu-container">
                 <button class="icon-btn submenu-item" v-for="(menu, index) in item.submenus" :key="index"
-                    @click="$emit('setActiveMenu', menu)" :class="{active: activeMenu === menu.title}">
+                    @click="$emit('setActiveMenu', menu)" :class="{ active: activeMenu === menu.title }">
                     {{ menu.title }}
                 </button>
             </div>
@@ -27,8 +29,25 @@ import { ref } from 'vue';
 const opened = ref(true);
 const activeItem = ref("");
 
-defineProps(['item', 'collapsed', 'activeMenu'])
-defineEmits(['setActiveMenu'])
+const props = defineProps(['item', 'collapsed', 'activeMenu'])
+const emit = defineEmits(['setActiveMenu', 'setCollapsed'])
+
+function toogleOpen() {
+    this.opened = !this.opened;
+
+    console.log("Teste")
+
+    console.log("this.collapsed")
+    console.log(props.collapsed)
+
+    console.log("this.opened")
+    console.log(this.opened)
+
+    if(props.collapsed && this.opened) {
+        console.log("Teste 2")
+        emit('setCollapsed', false)
+    }
+}
 
 </script>
 
@@ -39,6 +58,14 @@ defineEmits(['setActiveMenu'])
     align-items: center;
     gap: 10px;
     width: 100%;
+}
+
+.dropdown-toogle.active .menu-item-icon > svg {
+    color: var(--primary-color);
+}
+
+.dropdown-toogle:hover {
+    background-color: var(--secondary-color);
 }
 
 .menu-item-icon {

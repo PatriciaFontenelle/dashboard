@@ -14,25 +14,36 @@
                         </div>
                     </button>
                     <Dropdown :item="item" :collapsed="!menuOpened" @setActiveMenu="(item) => selectMenu(item)"
-                        :activeMenu="activeMenu" v-if="item.submenus" />
+                        @setCollapsed="(value) => menuOpened = !value" :activeMenu="activeMenu" v-if="item.submenus" />
+                </div>
+                <div class="logout-item">
+                    <button class="icon-btn menu-item logout-btn">
+                        <div class="menu-item-icon">
+                            <font-awesome-icon icon="fa-solid fa-arrow-right-from-bracket" />
+                        </div>
+                        <div class="menu-item-title">
+                            Logout
+                        </div>
+                    </button>
                 </div>
             </div>
         </nav>
         <header>
             <div class="header-left">
-                <button class="icon-btn nav-toogle" @click="menuOpened = !menuOpened">
-                    <font-awesome-icon class="desktop-content"
-                        :icon="`fa-solid fa-angles-${menuOpened ? 'left' : 'right'}`" />
-                    <font-awesome-icon class="mobile-content" :icon="`fa-solid ${menuOpened ? 'fa-xmark' : 'fa-bars'}`" />
+                <button class="icon-btn desktop-content nav-toogle" @click="menuOpened = !menuOpened">
+                    <font-awesome-icon :icon="`fa-solid fa-angles-${menuOpened ? 'left' : 'right'}`" />
                 </button>
-                <span class="username">
-                    Hello, John!
-                </span>
+                <button class="icon-btn mobile-content" @click="menuOpened = !menuOpened">
+                    <font-awesome-icon :icon="`fa-solid ${menuOpened ? 'fa-xmark' : 'fa-bars'}`" />
+                </button>
             </div>
             <div class="header-middle">
                 <img class="mobile-content" src="/src/assets/logo/logo.png" alt="dash logo">
             </div>
             <div class="header-right">
+                <span class="username">
+                    Hello, John!
+                </span>
                 <button class="icon-btn user-avatar">
                     <font-awesome-icon style="font-size: 30px;" icon="fa-solid fa-user-circle" />
                 </button>
@@ -84,11 +95,7 @@ const menuItems = ref([
         title: "Settings",
         icon: 'fa-gear',
         path: "/settings"
-    },
-    {
-        title: "Logout",
-        icon: 'fa-arrow-right-from-bracket'
-    },
+    }
 ])
 
 function selectMenu(menu) {
@@ -125,6 +132,22 @@ nav.collapsed {
     width: 80px;
 }
 
+.nav-toogle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: -32.5px;
+    background-color: var(--primary-color);
+}
+
+.nav-toogle > svg {
+    font-size: 12px;
+    color: var(--bg-white);
+}
+
 nav img {
     height: 40px;
 }
@@ -132,6 +155,11 @@ nav img {
 .menu-items-container {
     margin-top: 20px;
     width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu-item {
@@ -146,7 +174,8 @@ nav img {
     background-color: var(--secondary-color);
 }
 
-.active .menu-item-title {
+.active .menu-item-title,
+.active .menu-item-icon>svg {
     color: var(--primary-color);
     font-weight: bold;
     transition: .2s ease;
@@ -165,6 +194,32 @@ nav img {
 nav.collapsed .menu-item-title {
     opacity: 0;
     width: 0;
+}
+
+.logout-item {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.logout-btn {
+    border-radius: 5px;
+    color: var(--dark-900) !important;
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-transparent);
+}
+
+.logout-btn .menu-item-title {
+    color: var(--primary-color) !important;
+    font-weight: bold;
+    width: fit-content;
+}
+
+/* document.querySelector("#app > div > nav > div > div.logout-item > button > div.menu-item-icon > svg > path") */
+.logout-btn .menu-item-icon>svg {
+    color: var(--primary-color) !important;
 }
 
 /* HEADER */
