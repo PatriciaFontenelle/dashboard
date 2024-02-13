@@ -58,14 +58,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Dropdown from './Dropdown.vue';
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter();
+const route = useRoute();
 
 const menuOpened = ref(true);
-const activeMenu = ref("Dashboard");
+const activeMenu = ref("");
 
 const menuItems = ref([
     {
@@ -103,6 +104,27 @@ function selectMenu(menu) {
     router.push(menu.path)
 
 }
+
+onMounted(() => {
+    const currentPath = route.path;
+    const currentMenu = menuItems.value.find((item) => {
+        if (item.submenus) {
+            return item.submenus.find((menu) => {
+                console.log("menu")
+                console.log(menu)
+                if (menu.path === currentPath) return menu;
+            })
+        }
+        // } else {
+        //     return item.path === currentPath;
+        // }
+    })
+
+    activeMenu.value = currentMenu.title;
+
+    console.log("teste")
+    console.log(currentMenu.title)
+})
 </script>
 
 <style scoped>
@@ -143,7 +165,7 @@ nav.collapsed {
     background-color: var(--primary-color);
 }
 
-.nav-toogle > svg {
+.nav-toogle>svg {
     font-size: 12px;
     color: var(--bg-white);
 }

@@ -25,6 +25,9 @@ import {
   faAngleDown,
   faCaretDown,
   faCaretUp,
+  faMagnifyingGlass,
+  faPlus,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBell } from "@fortawesome/free-regular-svg-icons";
@@ -43,7 +46,10 @@ library.add(
   faAnglesLeft,
   faFilePen,
   faCaretDown,
-  faCaretUp
+  faCaretUp,
+  faMagnifyingGlass,
+  faPlus,
+  faPenToSquare
 );
 
 createApp(App)
